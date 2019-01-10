@@ -12,6 +12,9 @@ def order():
 
 @app.route('/orders', methods=['GET', 'POST'])
 def orders():
+    if len(past_orders) == 0:
+        return 'no past orders!'
+
     list_of_orders = [f'{order} for {user}' for order, user in past_orders]
     return ', '.join(list_of_orders)
 

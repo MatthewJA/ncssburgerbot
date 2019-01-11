@@ -5,7 +5,7 @@ from flask import request
 def order():
     order = request.values.get('text')
     user = request.values.get('user_name')
-    db.past_orders.insert({'order': order, 'user': user})
+    db.past_orders.insert_one({'order': order, 'user': user})
     return f'ok {user}, I ordered you a {order}.'
 
 @app.route('/orders', methods=['GET', 'POST'])
@@ -14,7 +14,8 @@ def orders():
     if past_orders.count() == 0:
         return 'no past orders!'
 
-    list_of_orders = [
-        f'{order["order"]} for {order["user"]}'
-        for order in past_orders]
+    list_of_orders = []
+    for order in past_orders:
+        order_string = f'{order["order"]} for {order["user"]}'
+        list_of_orders.append(order_string)
     return ', '.join(list_of_orders)

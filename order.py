@@ -1,13 +1,11 @@
-from flaskapp import app
+from flaskapp import app, db
 from flask import request
-
-past_orders = []
 
 @app.route('/order', methods=['GET', 'POST'])
 def order():
     order = request.values.get('text')
     user = request.values.get('user_name')
-    past_orders.append({
+    db.orders.insert_one({
         'name': user,
         'order': order,
     })
@@ -15,6 +13,7 @@ def order():
 
 @app.route('/orders', methods=['GET', 'POST'])
 def orders():
+    past_orders = list(db.orders.find())
     if len(past_orders) == 0:
         return 'no past orders!'
     
